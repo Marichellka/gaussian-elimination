@@ -7,14 +7,14 @@ public class SequentialAlgorithm<T> : IAlgorithm<T> where T :
     IMultiplyOperators<T, T, T>, ISubtractionOperators<T, T, T>,
     IDivisionOperators<T, T, T>, IAdditionOperators<T, T, T>
 {
-    public static T[] Solve(Matrix<T> coefficients, T[] values)
+    public T[] Solve(Matrix<T> coefficients, T[] values)
     {
         ForwardElimination(coefficients, values);
         BackwardElimination(coefficients, values);
         return values;
     }
 
-    private static void ForwardElimination(Matrix<T> coefficients, T[] values)
+    private void ForwardElimination(Matrix<T> coefficients, T[] values)
     {
         int n = values.Length;
         for (int k = 0; k < n; k++)
@@ -41,7 +41,7 @@ public class SequentialAlgorithm<T> : IAlgorithm<T> where T :
     }
 
     // process back substitution on a upper triangle matrix
-    private static void BackwardElimination(Matrix<T> coefficients, T[] values)
+    private void BackwardElimination(Matrix<T> coefficients, T[] values)
     {
         int n = values.Length;
         for (int i = n - 1; i >= 1; i--)

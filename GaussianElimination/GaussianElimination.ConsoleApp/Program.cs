@@ -9,7 +9,7 @@ Matrix<float> coeffs = new Matrix<float>(new float[][]
 });
 
 float[] values = new float[]{8, -11, -3};
-float[] result = SequentialAlgorithm<float>.Solve(coeffs, values);
+float[] result = new SequentialAlgorithm<float>().Solve(coeffs, values);
 
 for (int i = 0; i < result.Length; i++)
 {
