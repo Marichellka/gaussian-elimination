@@ -5,14 +5,14 @@ namespace GaussianElimination.Lib.Algorithms;
 
 public class SequentialAlgorithm
 {
-    public float[] Solve(Matrix<float> coefficients, float[] values)
+    public float[] Solve(Matrix coefficients, float[] values)
     {
         ForwardElimination(coefficients, values);
         BackwardElimination(coefficients, values);
         return values;
     }
 
-    private void ForwardElimination(Matrix<float> coefficients, float[] values)
+    private void ForwardElimination(Matrix coefficients, float[] values)
     {
         int n = values.Length;
         for (int k = 0; k < n; k++)
@@ -32,7 +32,7 @@ public class SequentialAlgorithm
         }
     }
 
-    private void Normalize(Matrix<float> coefficients, float[] values, int row)
+    private void Normalize(Matrix coefficients, float[] values, int row)
     {
         for (int j = row + 1; j < values.Length; j++)
         {
@@ -44,7 +44,7 @@ public class SequentialAlgorithm
     }
 
     // process back substitution on a upper triangle matrix
-    private void BackwardElimination(Matrix<float> coefficients, float[] values)
+    private void BackwardElimination(Matrix coefficients, float[] values)
     {
         int n = values.Length;
         for (int i = n - 1; i >= 1; i--)
