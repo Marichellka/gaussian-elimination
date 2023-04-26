@@ -5,5 +5,5 @@ namespace GaussianElimination.Lib.Algorithms;
 
 public interface IAlgorithm
 {
-    public float[] Solve(Matrix<float> coefficients, float[] values);
+    public float[] Solve(Matrix coefficients, float[] values);
 }
