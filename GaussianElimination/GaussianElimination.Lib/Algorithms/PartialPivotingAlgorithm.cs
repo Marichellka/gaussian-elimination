@@ -17,19 +17,8 @@ public class PartialPivotingAlgorithm : IAlgorithm
         int n = values.Length;
         for (int k = 0; k < n - 1; k++)
         {
-            int maxPivotRow = k;
-            float maxPivot = Math.Abs(coefficients[k, k]);
-            for (int i = k+1; i < n; i++)
-            {
-                float pivot = Math.Abs(coefficients[i, k]);
-                if (pivot > maxPivot)
-                {
-                    maxPivotRow = i;
-                    maxPivot = pivot;
-                }
-            }
-
-            if (maxPivotRow != k)
+            int maxPivotRow = FindPivotRow(coefficients, k);
+            if (maxPivotRow != k) //swap if needed
             {
                 (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
                 (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
@@ -47,6 +36,23 @@ public class PartialPivotingAlgorithm : IAlgorithm
                 coefficients[i, k] = default!;
             });
         }
+    }
+
+    private int FindPivotRow(Matrix coefficients, int start)
+    {
+        int maxPivotRow = start;
+        float maxPivot = Math.Abs(coefficients[start, start]);
+        for (int i = start+1; i < coefficients.Lenght; i++)
+        {
+            float pivot = Math.Abs(coefficients[i, start]);
+            if (pivot > maxPivot)
+            {
+                maxPivotRow = i;
+                maxPivot = pivot;
+            }
+        }
+
+        return maxPivotRow;
     }
     
     private void BackwardElimination(Matrix coefficients, float[] values)
