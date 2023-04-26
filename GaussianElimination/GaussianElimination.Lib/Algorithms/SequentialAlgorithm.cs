@@ -3,35 +3,27 @@ using GaussianElimination.Lib.Core;
 
 namespace GaussianElimination.Lib.Algorithms;
 
-public class SequentialAlgorithm<T> : IAlgorithm<T> where T :
-    IMultiplyOperators<T, T, T>, ISubtractionOperators<T, T, T>,
-    IDivisionOperators<T, T, T>, IAdditionOperators<T, T, T>
+public class SequentialAlgorithm
 {
-    public T[] Solve(Matrix<T> coefficients, T[] values)
+    public float[] Solve(Matrix<float> coefficients, float[] values)
     {
         ForwardElimination(coefficients, values);
         BackwardElimination(coefficients, values);
         return values;
     }
 
-    private void ForwardElimination(Matrix<T> coefficients, T[] values)
+    private void ForwardElimination(Matrix<float> coefficients, float[] values)
     {
         int n = values.Length;
         for (int k = 0; k < n; k++)
         {
-            for (int j = k + 1; j < n; j++)
-            {
-                coefficients[k, j] /= coefficients[k, k];
-            }
-
-            values[k] /= coefficients[k, k];
-            coefficients[k, k] /= coefficients[k, k];
-
+            Normalize(coefficients, values, k);
             for (int i = k + 1; i < n; i++)
             {
+                float scale = coefficients[i, k];
                 for (int j = k + 1; j < n; j++)
                 {
-                    coefficients[i, j] -= coefficients[i, k] * coefficients[k, j];
+                    coefficients[i, j] -= scale * coefficients[k, j];
                 }
 
                 values[i] -= coefficients[i, k] * values[k];
@@ -40,8 +32,19 @@ public class SequentialAlgorithm<T> : IAlgorithm<T> where T :
         }
     }
 
+    private void Normalize(Matrix<float> coefficients, float[] values, int row)
+    {
+        for (int j = row + 1; j < values.Length; j++)
+        {
+            coefficients[row, j] /= coefficients[row, row];
+        }
+
+        values[row] /= coefficients[row, row];
+        coefficients[row, row] /= coefficients[row, row];
+    }
+
     // process back substitution on a upper triangle matrix
-    private void BackwardElimination(Matrix<T> coefficients, T[] values)
+    private void BackwardElimination(Matrix<float> coefficients, float[] values)
     {
         int n = values.Length;
         for (int i = n - 1; i >= 1; i--)
