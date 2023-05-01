@@ -6,40 +6,64 @@ public class SuccessiveAlgorithm: IAlgorithm
 {
     public float[] Solve(Matrix coefficients, float[] values)
     {
-        int n = coefficients.Lenght;
+        int n = values.Length;
         if (n == 1)
         {
             values[0] /= coefficients[0][0];
             return values;
         }
-        
+
+        float[] results = new float[n];
+        var taskCountdown = new CountdownEvent(2);
+
         Matrix coefficients2 = coefficients.Clone();
         float[] values2 = GetCopy(values, 0, n);
+
+        ThreadPool.QueueUserWorkItem((state) =>
+        {
+            float[] result = LeftSplit(coefficients, values);
+
+            lock (results)
+            {
+                result.CopyTo(results, n/2);
+                taskCountdown.Signal();
+            }
+        });
         
-        ForwardElimination(coefficients, values);
-        float[] result1 = Solve(
-            coefficients.GetSubMatrix(n / 2, n / 2, n - n/2), 
-            GetCopy(values, n / 2, n));
+        ThreadPool.QueueUserWorkItem((state) =>
+        {
+            float[] result = RightSplit(coefficients2, values2);
+
+            lock (results)
+            {
+                result.CopyTo(results, 0);
+                taskCountdown.Signal();
+            }
+        });
+
+        taskCountdown.Wait();
         
-        BackwardElimination(coefficients2, values2);
-        float[] result2 = Solve(
-            coefficients2.GetSubMatrix(0, 0, n / 2), 
-            GetCopy(values2, 0, n / 2));
-        
-        result1.CopyTo(values, 0);
-        result2.CopyTo(values, n/2);
-        return values;
+        return results;
     }
 
-    private float[] GetCopy(float[] values, int start, int end)
+    private float[] LeftSplit(Matrix coefficients, float[] values)
     {
-        float[] copy = new float[end - start];
-        for (int i = start; i < end; i++)
-        {
-            copy[i - start] = values[i];
-        }
-
-        return copy;
+        int n = values.Length;
+        ForwardElimination(coefficients, values);
+        float[] result = Solve(
+            coefficients.GetSubMatrix(n / 2, n / 2, n - n/2), 
+            GetCopy(values, n / 2, n));
+        return result;
+    }
+    
+    private float[] RightSplit(Matrix coefficients, float[] values)
+    {
+        int n = values.Length;
+        BackwardElimination(coefficients, values);
+        float[] result = Solve(
+            coefficients.GetSubMatrix(0, 0, n / 2), 
+            GetCopy(values, 0, n / 2));
+        return result;
     }
 
     private void ForwardElimination(Matrix coefficients, float[] values)
@@ -71,23 +95,6 @@ public class SuccessiveAlgorithm: IAlgorithm
         }
     }
     
-    private int FindPivotRow(Matrix coefficients, int start, int end, int column)
-    {
-        int maxPivotRow = start;
-        float maxPivot = Math.Abs(coefficients[start, column]);
-        for (int i = start+1; i < end; i++)
-        {
-            float pivot = Math.Abs(coefficients[i, column]);
-            if (pivot > maxPivot)
-            {
-                maxPivotRow = i;
-                maxPivot = pivot;
-            }
-        }
-
-        return maxPivotRow;
-    }
-    
     private void BackwardElimination(Matrix coefficients, float[] values)
     {
         int n = coefficients.Lenght;
@@ -115,5 +122,33 @@ public class SuccessiveAlgorithm: IAlgorithm
                 values[i] -= coefficients[i, k] * values[k];
             }
         }
+    }
+    
+    private float[] GetCopy(float[] values, int start, int end)
+    {
+        float[] copy = new float[end - start];
+        for (int i = start; i < end; i++)
+        {
+            copy[i - start] = values[i];
+        }
+
+        return copy;
+    }
+    
+    private int FindPivotRow(Matrix coefficients, int start, int end, int column)
+    {
+        int maxPivotRow = start;
+        float maxPivot = Math.Abs(coefficients[start, column]);
+        for (int i = start+1; i < end; i++)
+        {
+            float pivot = Math.Abs(coefficients[i, column]);
+            if (pivot > maxPivot)
+            {
+                maxPivotRow = i;
+                maxPivot = pivot;
+            }
+        }
+
+        return maxPivotRow;
     }
 }
