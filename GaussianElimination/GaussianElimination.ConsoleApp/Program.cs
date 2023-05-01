@@ -1,17 +1,18 @@
 ﻿using GaussianElimination.Lib.Algorithms;
 using GaussianElimination.Lib.Core;
 
-Matrix<float> coeffs = new Matrix<float>(new float[][]
+Matrix coeffs = new Matrix(new float[][]
 {
-    new float[] { 2, 1, -1 }, 
-    new float[] { -3, -1, 2}, 
-    new float[] { -2, 1, 2}
+    new float[] { 11, 13, -4, 8}, 
+    new float[] { 1, 9, -5, -3}, 
+    new float[] { -21, -12, 5, -1}, 
+    new float[] { 4, 31, 7, 3}, 
 });
-
-float[] values = new float[]{8, -11, -3};
-float[] result = new SequentialAlgorithm<float>().Solve(coeffs, values);
-
+float[] values = new float[]{ -4, 8, -8, 17};
+// float[] result = new SequentialAlgorithm().Solve(coeffs, values);
+float[] result = new PartialPivotingAlgorithm().Solve(coeffs, values);
+// float[] result = new SuccessiveAlgorithm().Solve(coeffs, values);
 for (int i = 0; i < result.Length; i++)
 {
-    Console.WriteLine($"x{i + 1} = {result[i]}");
+    Console.WriteLine($"x{i + 1} = {Math.Round(result[i], 5)}");
 }
