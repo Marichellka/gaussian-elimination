@@ -27,7 +27,7 @@ public class SequentialAlgorithm
                 }
 
                 values[i] -= coefficients[i, k] * values[k];
-                coefficients[i, k] = default!;
+                coefficients[i, k] = 0;
             }
         }
     }
@@ -40,7 +40,7 @@ public class SequentialAlgorithm
         }
 
         values[row] /= coefficients[row, row];
-        coefficients[row, row] /= coefficients[row, row];
+        coefficients[row, row] = 1;
     }
 
     // process back substitution on a upper triangle matrix
@@ -52,7 +52,7 @@ public class SequentialAlgorithm
             for (int j = i - 1; j >= 0; j--)
             {
                 values[j] -= values[i] * (coefficients[j, i] / coefficients[i, i]);
-                coefficients[j, i] = default!;
+                coefficients[j, i] = 0;
             }
         }
     }
