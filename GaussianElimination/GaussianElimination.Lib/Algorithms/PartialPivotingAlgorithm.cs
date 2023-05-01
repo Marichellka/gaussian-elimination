@@ -8,7 +8,7 @@ public class PartialPivotingAlgorithm : IAlgorithm
     public float[] Solve(Matrix coefficients, float[] values)
     {
         ForwardElimination(coefficients, values);
-        BackwardElimination(coefficients, values);
+        BackwardSubstitution(coefficients, values);
         return values;
     }
     
@@ -17,7 +17,7 @@ public class PartialPivotingAlgorithm : IAlgorithm
         int n = values.Length;
         for (int k = 0; k < n - 1; k++)
         {
-            int maxPivotRow = FindPivotRow(coefficients, k);
+            int maxPivotRow = coefficients.FindPivotRow(k, n, k);
             if (maxPivotRow != k) //swap if needed
             {
                 (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
@@ -38,24 +38,7 @@ public class PartialPivotingAlgorithm : IAlgorithm
         }
     }
 
-    private int FindPivotRow(Matrix coefficients, int start)
-    {
-        int maxPivotRow = start;
-        float maxPivot = Math.Abs(coefficients[start, start]);
-        for (int i = start+1; i < coefficients.Lenght; i++)
-        {
-            float pivot = Math.Abs(coefficients[i, start]);
-            if (pivot > maxPivot)
-            {
-                maxPivotRow = i;
-                maxPivot = pivot;
-            }
-        }
-
-        return maxPivotRow;
-    }
-    
-    private void BackwardElimination(Matrix coefficients, float[] values)
+    private void BackwardSubstitution(Matrix coefficients, float[] values)
     {
         int n = values.Length;
         for (int i = n - 1; i >= 0; i--)

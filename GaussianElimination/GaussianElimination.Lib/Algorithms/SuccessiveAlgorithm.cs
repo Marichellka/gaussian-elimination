@@ -71,7 +71,7 @@ public class SuccessiveAlgorithm: IAlgorithm
         int n = coefficients.Lenght;
         for (int k = 0; k < n / 2; k++)
         {
-            int maxPivotRow = FindPivotRow(coefficients, k, n, k);
+            int maxPivotRow = coefficients.FindPivotRow(k, n, k);
             if (maxPivotRow != k) //swap if needed
             {
                 (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
@@ -100,7 +100,7 @@ public class SuccessiveAlgorithm: IAlgorithm
         int n = coefficients.Lenght;
         for (int k = n - 1; k >= n / 2; k--)
         {
-            int maxPivotRow = FindPivotRow(coefficients, 0, k+1, k);
+            int maxPivotRow = coefficients.FindPivotRow( 0, k+1, k);
             if (maxPivotRow != k) //swap if needed
             {
                 (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
@@ -133,22 +133,5 @@ public class SuccessiveAlgorithm: IAlgorithm
         }
 
         return copy;
-    }
-    
-    private int FindPivotRow(Matrix coefficients, int start, int end, int column)
-    {
-        int maxPivotRow = start;
-        float maxPivot = Math.Abs(coefficients[start, column]);
-        for (int i = start+1; i < end; i++)
-        {
-            float pivot = Math.Abs(coefficients[i, column]);
-            if (pivot > maxPivot)
-            {
-                maxPivotRow = i;
-                maxPivot = pivot;
-            }
-        }
-
-        return maxPivotRow;
     }
 }

@@ -33,6 +33,23 @@ public class Matrix
         }
     }
     
+    public int FindPivotRow(int start, int end, int column)
+    {
+        int maxPivotRow = start;
+        float maxPivot = Math.Abs(matrix[start][column]);
+        for (int i = start+1; i < end; i++)
+        {
+            float pivot = Math.Abs(matrix[i][column]);
+            if (pivot > maxPivot)
+            {
+                maxPivotRow = i;
+                maxPivot = pivot;
+            }
+        }
+
+        return maxPivotRow;
+    }
+    
     public void GenerateValues(Func<float> generator)
     {
         for (int i = 0; i < matrix.GetLength(0); i++)
