@@ -3,9 +3,7 @@ using GaussianElimination.Lib.Core;
 
 namespace GaussianElimination.Lib.Algorithms;
 
-public interface IAlgorithm<T> where T: 
-    IMultiplyOperators<T, T, T>, ISubtractionOperators<T, T, T>,
-    IDivisionOperators<T, T, T>, IAdditionOperators<T, T, T>
+public interface IAlgorithm
 {
-    public static abstract T[] Solve(Matrix<T> coefficients, T[] values);
+    public float[] Solve(Matrix coefficients, float[] values);
 }
