@@ -44,10 +44,39 @@ public class Matrix
         }
     }
 
-    public int Lenght => GetLenght(0);
+    public Matrix GetSubMatrix(int row, int column, int size)
+    {
+        float[][] subMatrix = new float[size][];
+        for (int i = 0; i < size; i++)
+        {
+            subMatrix[i] = new float[size];
+            for (int j = 0; j < size; j++)
+            {
+                subMatrix[i][j] = matrix[row + i][column + j];
+            }
+        }
+
+        return new Matrix(subMatrix);
+    }
+
+    public Matrix Clone()
+    {
+        float[][] newMatrix = new float[matrix.Length][];
+        for (int i = 0; i < matrix.Length; i++)
+        {
+            newMatrix[i] = new float[matrix[i].Length];
+            for (int j = 0; j < matrix[i].Length; j++)
+            {
+                newMatrix[i][j] = matrix[i][j];
+            }
+        }
+        return new Matrix(newMatrix);
+    }
+
+    public int Lenght => matrix.Length;
     public int GetLenght(int dimension)
     {
-        return matrix.GetLength(dimension);
+        return dimension == 0 ? Lenght : matrix[0].Length;
     }
 
     public float[] this[int i]
