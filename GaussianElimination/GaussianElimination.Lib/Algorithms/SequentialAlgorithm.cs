@@ -8,52 +8,48 @@ public class SequentialAlgorithm
     public float[] Solve(Matrix coefficients, float[] values)
     {
         ForwardElimination(coefficients, values);
-        BackwardElimination(coefficients, values);
+        BackwardSubstitution(coefficients, values);
         return values;
     }
 
     private void ForwardElimination(Matrix coefficients, float[] values)
     {
         int n = values.Length;
-        for (int k = 0; k < n; k++)
+        for (int k = 0; k < n - 1; k++)
         {
-            Normalize(coefficients, values, k);
-            for (int i = k + 1; i < n; i++)
+            int maxPivotRow = coefficients.FindPivotRow(k, n, k);
+            if (maxPivotRow != k)
             {
-                float scale = coefficients[i, k];
+                (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
+                (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
+            }
+
+            for (int i = k+1; i < n; i++)
+            {
+                float scale = coefficients[i, k] / coefficients[k, k];
                 for (int j = k + 1; j < n; j++)
                 {
                     coefficients[i, j] -= scale * coefficients[k, j];
                 }
 
-                values[i] -= coefficients[i, k] * values[k];
+                values[i] -= scale * values[k];
                 coefficients[i, k] = 0;
             }
         }
     }
 
-    private void Normalize(Matrix coefficients, float[] values, int row)
-    {
-        for (int j = row + 1; j < values.Length; j++)
-        {
-            coefficients[row, j] /= coefficients[row, row];
-        }
-
-        values[row] /= coefficients[row, row];
-        coefficients[row, row] = 1;
-    }
-
     // process back substitution on a upper triangle matrix
-    private void BackwardElimination(Matrix coefficients, float[] values)
+    private void BackwardSubstitution(Matrix coefficients, float[] values)
     {
         int n = values.Length;
-        for (int i = n - 1; i >= 1; i--)
+        for (int i = n - 1; i >= 0; i--)
         {
-            for (int j = i - 1; j >= 0; j--)
+            float sum = 0;
+            for (int j = i+1; j < n; j++)
             {
-                values[j] -= values[i] * (coefficients[j, i] / coefficients[i, i]);
-                coefficients[j, i] = 0;
+                sum += coefficients[i, j] * values[j];
             }
+            values[i] = (values[i] - sum) / coefficients[i, i];
         }
     }
 }
