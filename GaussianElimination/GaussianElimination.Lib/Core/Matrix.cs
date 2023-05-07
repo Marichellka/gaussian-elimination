@@ -4,7 +4,7 @@ namespace GaussianElimination.Lib.Core;
 
 public class Matrix
 {
-    private float[][] matrix;
+    public float[][] matrix;
 
     public Matrix(int lenght1, int lenght2)
     {
@@ -50,13 +50,14 @@ public class Matrix
         return maxPivotRow;
     }
     
-    public void GenerateValues(Func<float> generator)
+    public void GenerateValues()
     {
-        for (int i = 0; i < matrix.GetLength(0); i++)
+        Random random = new Random();
+        for (int i = 0; i < matrix.Length; i++)
         {
-            for (int j = 0; j < matrix.GetLength(1); j++)
+            for (int j = 0; j < matrix[0].Length; j++)
             {
-                matrix[i][j] = generator();
+                matrix[i][j] = random.Next(-10, 10);
             }
         }
     }

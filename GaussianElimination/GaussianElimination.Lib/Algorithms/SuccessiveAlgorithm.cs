@@ -4,11 +4,19 @@ namespace GaussianElimination.Lib.Algorithms;
 
 public class SuccessiveAlgorithm: IAlgorithm
 {
+    private int minSizeSystem;
+    public SuccessiveAlgorithm(int threads, int minSizeSystem)
+    {
+        this.minSizeSystem = minSizeSystem;
+        // ThreadPool.SetMaxThreads(threads, threads);
+    }
+    
     public float[] Solve(Matrix coefficients, float[] values)
     {
         int n = values.Length;
-        if (n == 1)
+        if (n <= minSizeSystem)
         {
+            return new SequentialAlgorithm().Solve(coefficients, values);
             values[0] /= coefficients[0][0];
             return values;
         }
@@ -71,26 +79,14 @@ public class SuccessiveAlgorithm: IAlgorithm
         int n = coefficients.Lenght;
         for (int k = 0; k < n / 2; k++)
         {
-            int maxPivotRow = coefficients.FindPivotRow(k, n, k);
-            if (maxPivotRow != k) //swap if needed
-            {
-                (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
-                (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
-            }
-
-            for (int i = k + 1; i < n; i++)
-            {
-                coefficients[k, i] /= coefficients[k, k];
-            }
-            values[k] /= coefficients[k, k];
 
             for (int i = k + 1; i < n; i++)
             {
                 for (int j = k + 1; j < n; j++)
                 {
-                    coefficients[i, j] -= coefficients[i, k] * coefficients[k, j];
+                    coefficients[i, j] -= coefficients[i, k] * coefficients[k, j] / coefficients[k, k];
                 }
-                values[i] -= coefficients[i, k] * values[k];
+                values[i] -= coefficients[i, k] * values[k] / coefficients[k, k];
             }
         }
     }
@@ -100,26 +96,13 @@ public class SuccessiveAlgorithm: IAlgorithm
         int n = coefficients.Lenght;
         for (int k = n - 1; k >= n / 2; k--)
         {
-            int maxPivotRow = coefficients.FindPivotRow( 0, k+1, k);
-            if (maxPivotRow != k) //swap if needed
-            {
-                (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
-                (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
-            }
-
-            for (int i = k - 1; i >= 0; i--)
-            {
-                coefficients[k, i] /= coefficients[k, k];
-            }
-            values[k] /= coefficients[k, k];
-
             for (int i = k - 1; i >= 0; i--)
             {
                 for (int j = k - 1; j >= 0; j--)
                 {
-                    coefficients[i, j] -= coefficients[i, k] * coefficients[k, j];
+                    coefficients[i, j] -= coefficients[i, k] * coefficients[k, j] / coefficients[k, k];
                 }
-                values[i] -= coefficients[i, k] * values[k];
+                values[i] -= coefficients[i, k] * values[k] / coefficients[k, k];
             }
         }
     }
