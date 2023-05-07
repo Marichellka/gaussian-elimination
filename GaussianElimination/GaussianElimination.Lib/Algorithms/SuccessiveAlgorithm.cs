@@ -17,8 +17,6 @@ public class SuccessiveAlgorithm: IAlgorithm
         if (n <= minSizeSystem)
         {
             return new SequentialAlgorithm().Solve(coefficients, values);
-            values[0] /= coefficients[0][0];
-            return values;
         }
 
         float[] results = new float[n];
@@ -79,7 +77,13 @@ public class SuccessiveAlgorithm: IAlgorithm
         int n = coefficients.Lenght;
         for (int k = 0; k < n / 2; k++)
         {
-
+            int maxPivotRow = coefficients.FindPivotRow(k, n, k);
+            if (maxPivotRow != k) //swap if needed
+            {
+                (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
+                (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
+            }
+            
             for (int i = k + 1; i < n; i++)
             {
                 for (int j = k + 1; j < n; j++)
@@ -96,6 +100,13 @@ public class SuccessiveAlgorithm: IAlgorithm
         int n = coefficients.Lenght;
         for (int k = n - 1; k >= n / 2; k--)
         {
+            int maxPivotRow = coefficients.FindPivotRow( 0, k+1, k);
+            if (maxPivotRow != k) //swap if needed
+            {
+                (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
+                (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
+            }
+
             for (int i = k - 1; i >= 0; i--)
             {
                 for (int j = k - 1; j >= 0; j--)

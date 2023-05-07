@@ -17,12 +17,12 @@ public class SequentialAlgorithm
         int n = values.Length;
         for (int k = 0; k < n - 1; k++)
         {
-            // int maxPivotRow = coefficients.FindPivotRow(k, n, k);
-            // if (maxPivotRow != k)
-            // {
-            //     (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
-            //     (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
-            // }
+            int maxPivotRow = coefficients.FindPivotRow(k, n, k);
+            if (maxPivotRow != k)
+            {
+                (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
+                (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
+            }
 
             for (int i = k+1; i < n; i++)
             {
