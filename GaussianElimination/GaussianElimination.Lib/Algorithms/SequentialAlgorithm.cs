@@ -24,7 +24,7 @@ public class SequentialAlgorithm
                 (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
             }
 
-            for (int i = k+1; i < n; i++)
+            for (int i = k + 1; i < n; i++)
             {
                 float scale = coefficients[i, k] / coefficients[k, k];
                 for (int j = k + 1; j < n; j++)

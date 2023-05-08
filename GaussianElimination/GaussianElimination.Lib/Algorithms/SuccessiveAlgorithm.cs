@@ -19,37 +19,62 @@ public class SuccessiveAlgorithm: IAlgorithm
             return new SequentialAlgorithm().Solve(coefficients, values);
         }
 
-        float[] results = new float[n];
+        List<float> results = new List<float>();
         var taskCountdown = new CountdownEvent(2);
-
+        
+        
         Matrix coefficients2 = coefficients.Clone();
         float[] values2 = GetCopy(values, 0, n);
-
-        ThreadPool.QueueUserWorkItem((state) =>
-        {
-            float[] result = LeftSplit(coefficients, values);
-
-            lock (results)
-            {
-                result.CopyTo(results, n/2);
-                taskCountdown.Signal();
-            }
-        });
+        Matrix[] coeffs = new[] { coefficients, coefficients2 };
+        float[][] vals = new[] { values, values2 };
         
-        ThreadPool.QueueUserWorkItem((state) =>
-        {
-            float[] result = RightSplit(coefficients2, values2);
-
-            lock (results)
+        Parallel.Invoke(new ParallelOptions(), 
+            ()=>
             {
-                result.CopyTo(results, 0);
-                taskCountdown.Signal();
-            }
-        });
+                List<float> result = LeftSplit(coefficients, values).ToList();
+                results.AddRange(result);
+            },
+            () =>
+            {
+                List<float> result = RightSplit(coefficients2, values2).ToList();
+                results.AddRange(result);
+            });
 
-        taskCountdown.Wait();
+        // Func<Matrix, float[], float[]>[] funcs = new [] { LeftSplit, RightSplit };
+        // float[][] res = new float[2][];
+        // Parallel.For(0, funcs.Length, i =>
+        // {
+        //     res[i]=funcs[i](coeffs[i], vals[i]);
+        // });
+        //
+        // res[0].CopyTo(results, n/2);
+        // res[1].CopyTo(results, 0);
+
+        // ThreadPool.QueueUserWorkItem((state) =>
+        // {
+        //     float[] result = LeftSplit(coefficients, values);
+        //
+        //     lock (results)
+        //     {
+        //         result.CopyTo(results, n/2);
+        //         taskCountdown.Signal();
+        //     }
+        // });
+        //
+        // ThreadPool.QueueUserWorkItem((state) =>
+        // {
+        //     float[] result = RightSplit(coefficients2, values2);
+        //
+        //     lock (results)
+        //     {
+        //         result.CopyTo(results, 0);
+        //         taskCountdown.Signal();
+        //     }
+        // });
+        //
+        // taskCountdown.Wait();
         
-        return results;
+        return results.ToArray();
     }
 
     private float[] LeftSplit(Matrix coefficients, float[] values)

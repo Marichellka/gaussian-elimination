@@ -22,7 +22,11 @@ watch.Stop();
 Console.WriteLine(watch.ElapsedMilliseconds);
 // float[] result = new PartialPivotingAlgorithm().Solve(coeffs, b);
 watch.Restart();
-result = new SuccessiveAlgorithm(10, 250).Solve(coeffs, b);
+result = new SuccessiveAlgorithm(10, 50).Solve(coeffs, b);
+watch.Stop();
+Console.WriteLine(watch.ElapsedMilliseconds);
+watch.Restart();
+result = new BlockOriented().Solve(coeffs, b);
 watch.Stop();
 Console.WriteLine(watch.ElapsedMilliseconds);
 // for (int i = 0; i < result.Length; i++)
