@@ -3,7 +3,7 @@ using GaussianElimination.Lib.Core;
 
 namespace GaussianElimination.Lib.Algorithms;
 
-public class SequentialAlgorithm
+public class SequentialAlgorithm : IAlgorithm
 {
     public float[] Solve(Matrix coefficients, float[] values)
     {
