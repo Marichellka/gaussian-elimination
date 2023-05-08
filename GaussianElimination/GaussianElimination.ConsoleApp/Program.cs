@@ -9,9 +9,7 @@ Matrix coeffs = new Matrix(new float[][]
     new float[] { 4, 31, 7, 3}, 
 });
 float[] values = new float[]{ -4, 8, -8, 17};
-// float[] result = new SequentialAlgorithm().Solve(coeffs, values);
-float[] result = new PartialPivotingAlgorithm().Solve(coeffs, values);
-// float[] result = new SuccessiveAlgorithm().Solve(coeffs, values);
+float[] result = new SequentialAlgorithm().Solve(coeffs, values);
 for (int i = 0; i < result.Length; i++)
 {
     Console.WriteLine($"x{i + 1} = {Math.Round(result[i], 5)}");
