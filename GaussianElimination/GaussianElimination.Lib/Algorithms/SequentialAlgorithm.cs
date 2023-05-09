@@ -27,10 +27,7 @@ public class SequentialAlgorithm : IAlgorithm
             for (int i = k + 1; i < n; i++)
             {
                 float scale = coefficients[i, k] / coefficients[k, k];
-                for (int j = k + 1; j < n; j++)
-                {
-                    coefficients[i, j] -= scale * coefficients[k, j];
-                }
+                coefficients.SubtractFromRow(i, k, scale, k+1);
 
                 values[i] -= scale * values[k];
                 coefficients[i, k] = 0;

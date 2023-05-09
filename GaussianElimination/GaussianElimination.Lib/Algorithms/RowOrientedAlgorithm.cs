@@ -60,18 +60,10 @@ public class RowOrientedAlgorithm: IAlgorithm
         for (int i = start; i < end; i++)
         {
             float scale = coefficients[i, pivot] / coefficients[pivot, pivot];
-            SubtractFromRow(coefficients[i], coefficients[pivot], scale, pivot+1);
+            coefficients.SubtractFromRow(i, pivot, scale, pivot+1);
 
             values[i] -= scale * values[pivot];
             coefficients[i, pivot] = 0;
-        }
-    }
-
-    private void SubtractFromRow(float[] minuend, float[] subtrahend, float scale, int startInd)
-    {
-        for (int i = startInd; i < minuend.Length; i++)
-        {
-            minuend[i] -= scale * subtrahend[i];
         }
     }
 
