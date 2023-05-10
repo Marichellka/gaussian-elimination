@@ -9,16 +9,17 @@ public class RowOrientedAlgorithm: IAlgorithm
     public RowOrientedAlgorithm(int threadCount)
     {
         _threadCount = threadCount;
+        ThreadPool.SetMaxThreads(threadCount, threadCount);
     }
     
-    public float[] Solve(Matrix coefficients, float[] values)
+    public double[] Solve(Matrix coefficients, double[] values)
     {
         ForwardElimination(coefficients, values);
         BackwardSubstitution(coefficients, values);
         return values;
     }
     
-    private void ForwardElimination(Matrix coefficients, float[] values)
+    private void ForwardElimination(Matrix coefficients, double[] values)
     {
         int n = values.Length;
         for (int k = 0; k < n - 1; k++)
@@ -55,11 +56,11 @@ public class RowOrientedAlgorithm: IAlgorithm
         }
     }
 
-    private void SubtractFromRows(Matrix coefficients, float[] values, int start, int end, int pivot)
+    private void SubtractFromRows(Matrix coefficients, double[] values, int start, int end, int pivot)
     {
         for (int i = start; i < end; i++)
         {
-            float scale = coefficients[i, pivot] / coefficients[pivot, pivot];
+            double scale = coefficients[i, pivot] / coefficients[pivot, pivot];
             coefficients.SubtractFromRow(i, pivot, scale, pivot+1);
 
             values[i] -= scale * values[pivot];
@@ -72,7 +73,7 @@ public class RowOrientedAlgorithm: IAlgorithm
         int rowsPerWorker = (end - start) / _threadCount;
         int leftRows = (end - start) % _threadCount;
         int globalPivotRow = start;
-        float globalPivot = Math.Abs(matrix[start, column]);
+        double globalPivot = Math.Abs(matrix[start, column]);
         CountdownEvent countDown = new CountdownEvent(_threadCount);
         for (int i = 0; i < _threadCount; i++)
         {
@@ -97,13 +98,13 @@ public class RowOrientedAlgorithm: IAlgorithm
         return globalPivotRow;
     }
     
-    // process back substitution on a upper triangle matrix
-    private void BackwardSubstitution(Matrix coefficients, float[] values)
+    // process back substitution on an upper triangle matrix
+    private void BackwardSubstitution(Matrix coefficients, double[] values)
     {
         int n = values.Length;
         for (int i = n - 1; i >= 0; i--)
         {
-            float sum = 0;
+            double sum = 0;
             for (int j = i+1; j < n; j++)
             {
                 sum += coefficients[i, j] * values[j];
