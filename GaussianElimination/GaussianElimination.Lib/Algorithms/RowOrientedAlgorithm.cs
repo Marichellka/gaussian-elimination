@@ -61,7 +61,7 @@ public class RowOrientedAlgorithm: IAlgorithm
         for (int i = start; i < end; i++)
         {
             double scale = coefficients[i, pivot] / coefficients[pivot, pivot];
-            coefficients.SubtractFromRow(i, pivot, scale, pivot+1);
+            coefficients.SubtractRows(i, pivot, scale, pivot+1);
 
             values[i] -= scale * values[pivot];
             coefficients[i, pivot] = 0;

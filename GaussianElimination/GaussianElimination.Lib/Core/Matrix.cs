@@ -33,7 +33,7 @@ public class Matrix
         }
     }
     
-    public void SubtractFromRow(int minuend, int subtrahend, double scale, int startInd)
+    public void SubtractRows(int minuend, int subtrahend, double scale, int startInd)
     {
         for (int i = startInd; i < _matrix.Length; i++)
         {
