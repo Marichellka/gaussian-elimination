@@ -9,7 +9,7 @@ public static class Tester
     {
         for (int j = 0; j < threadCounts.Length; j++)
         {
-            RowOrientedAlgorithm algorithm = new RowOrientedAlgorithm(threadCounts[j]);
+            var algorithm = new RowOrientedAlgorithm(threadCounts[j]);
             Console.WriteLine($"Thread count: {threadCounts[j]}");
             TestMultiple(algorithm, sizes);
         }
@@ -35,11 +35,9 @@ public static class Tester
     {
         Matrix coefficients = new Matrix(size, size);
         double[] values = coefficients.GenerateValues();
-
         double[] result = algorithm.Solve(coefficients, values);
         
         bool isCorrect = true;
-
         Console.Write("x = [ ");
         for (int i = 0; i < result.Length; i++)
         {
@@ -49,7 +47,6 @@ public static class Tester
                 isCorrect = false;
             }
         }
-
         Console.WriteLine($"]\nResult is correct: {isCorrect}");
     }
 

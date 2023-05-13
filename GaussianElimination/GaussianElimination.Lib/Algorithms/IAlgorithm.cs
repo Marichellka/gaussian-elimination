@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using GaussianElimination.Lib.Core;
+﻿using GaussianElimination.Lib.Core;
 
 namespace GaussianElimination.Lib.Algorithms;
 

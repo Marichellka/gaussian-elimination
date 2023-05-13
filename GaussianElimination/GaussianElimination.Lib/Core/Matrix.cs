@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace GaussianElimination.Lib.Core;
+﻿namespace GaussianElimination.Lib.Core;
 
 public class Matrix
 {
@@ -17,18 +15,18 @@ public class Matrix
 
     public Matrix(double[][] matrix)
     {
-        this._matrix = matrix;
+        _matrix = matrix;
     }
     
     public Matrix(double[,] matrix)
     {
-        this._matrix = new double[matrix.GetLength(0)][];
+        _matrix = new double[matrix.GetLength(0)][];
         for (int i = 0; i < matrix.GetLength(0); i++)
         {
-            this._matrix[i] = new double[matrix.GetLength(1)];
+            _matrix[i] = new double[matrix.GetLength(1)];
             for (int j = 0; j < matrix.GetLength(1); j++)
             {
-                this._matrix[i][j] = matrix[i, j];
+                _matrix[i][j] = matrix[i, j];
             }
         }
     }
@@ -73,35 +71,6 @@ public class Matrix
         }
 
         return values;
-    }
-
-    public Matrix GetSubMatrix(int row, int column, int size)
-    {
-        double[][] subMatrix = new double[size][];
-        for (int i = 0; i < size; i++)
-        {
-            subMatrix[i] = new double[size];
-            for (int j = 0; j < size; j++)
-            {
-                subMatrix[i][j] = _matrix[row + i][column + j];
-            }
-        }
-
-        return new Matrix(subMatrix);
-    }
-
-    public Matrix Clone()
-    {
-        double[][] newMatrix = new double[_matrix.Length][];
-        for (int i = 0; i < _matrix.Length; i++)
-        {
-            newMatrix[i] = new double[_matrix[i].Length];
-            for (int j = 0; j < _matrix[i].Length; j++)
-            {
-                newMatrix[i][j] = _matrix[i][j];
-            }
-        }
-        return new Matrix(newMatrix);
     }
 
     public int Length => _matrix.Length;

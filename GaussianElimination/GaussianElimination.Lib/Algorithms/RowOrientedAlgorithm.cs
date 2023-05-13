@@ -5,7 +5,7 @@ namespace GaussianElimination.Lib.Algorithms;
 public class RowOrientedAlgorithm: IAlgorithm
 {
     private int _threadCount;
-    private object _locker = new object();
+    private object _locker = new ();
     
     public RowOrientedAlgorithm(int threadCount)
     {
@@ -41,8 +41,8 @@ public class RowOrientedAlgorithm: IAlgorithm
                 int rows = rowsPerWorker + (i < leftRows ? 1 : 0);
                 if (rows == 0)
                 {
-                    countDown.Signal();
-                    continue;
+                    countDown.Signal(_threadCount-i);
+                    break;
                 }
                 int start = offset;
                 int pivot = k;
@@ -60,7 +60,9 @@ public class RowOrientedAlgorithm: IAlgorithm
         }
     }
 
-    private void SubtractFromRows(double[][] coefficients, Span<double> values, double[] pivotRow, double pivotValue, int pivot)
+    private void SubtractFromRows(
+        double[][] coefficients, Span<double> values, 
+        double[] pivotRow, double pivotValue, int pivot)
     {
         for (int i = 0; i < coefficients.Length; i++)
         {
@@ -86,8 +88,8 @@ public class RowOrientedAlgorithm: IAlgorithm
             int rows = rowsPerWorker + (i < leftRows ? 1 : 0);
             if (rows == 0)
             {
-                countDown.Signal();
-                continue;
+                countDown.Signal(_threadCount-i);
+                break;
             }
             int startCopy = start;
             ThreadPool.QueueUserWorkItem(_ =>
