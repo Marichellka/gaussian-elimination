@@ -104,10 +104,10 @@ public class Matrix
         return new Matrix(newMatrix);
     }
 
-    public int Lenght => _matrix.Length;
+    public int Length => _matrix.Length;
     public int GetLenght(int dimension)
     {
-        return dimension == 0 ? Lenght : _matrix[0].Length;
+        return dimension == 0 ? Length : _matrix[0].Length;
     }
 
     public double[] this[int i]
@@ -120,5 +120,10 @@ public class Matrix
     {
         get => _matrix[i][j];
         set => _matrix[i][j] = value;
+    }
+
+    public double[][] this[Range range]
+    {
+        get => _matrix[range];
     }
 }

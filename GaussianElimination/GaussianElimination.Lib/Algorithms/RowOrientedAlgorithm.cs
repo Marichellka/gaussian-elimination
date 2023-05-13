@@ -45,9 +45,12 @@ public class RowOrientedAlgorithm: IAlgorithm
                     continue;
                 }
                 int start = offset;
+                int pivot = k;
                 ThreadPool.QueueUserWorkItem(_ =>
                 {
-                    SubtractFromRows(coefficients, values, start, start+rows, k);
+                    SubtractFromRows(
+                        coefficients[start..(start+rows)], values.AsSpan()[start..(start+rows)], 
+                        coefficients[pivot], values[pivot], pivot);
                     countDown.Signal();
                 });
                 offset += rows;
@@ -57,15 +60,18 @@ public class RowOrientedAlgorithm: IAlgorithm
         }
     }
 
-    private void SubtractFromRows(Matrix coefficients, double[] values, int start, int end, int pivot)
+    private void SubtractFromRows(double[][] coefficients, Span<double> values, double[] pivotRow, double pivotValue, int pivot)
     {
-        for (int i = start; i < end; i++)
+        for (int i = 0; i < coefficients.Length; i++)
         {
-            double scale = coefficients[i, pivot] / coefficients[pivot, pivot];
-            coefficients.SubtractRows(i, pivot, scale, pivot+1);
+            double scale = coefficients[i][pivot] / pivotRow[pivot];
+            for (int j = pivot+1; j < coefficients[i].Length; j++)
+            {
+                coefficients[i][j] -= scale * pivotRow[j];
+            }
 
-            values[i] -= scale * values[pivot];
-            coefficients[i, pivot] = 0;
+            values[i] -= scale * pivotValue;
+            coefficients[i][pivot] = 0;
         }
     }
 
@@ -86,7 +92,7 @@ public class RowOrientedAlgorithm: IAlgorithm
             int startCopy = start;
             ThreadPool.QueueUserWorkItem(_ =>
             {
-                int localPivotRow = matrix.FindPivotRow(startCopy, startCopy+rows, column);
+                int localPivotRow = FindLocalPivot(matrix[startCopy..(startCopy+rows)], column)+startCopy;
                 lock (_locker)
                 {
                     if (Math.Abs(matrix[globalPivotRow, column]) < Math.Abs(matrix[localPivotRow, column]))
@@ -101,6 +107,23 @@ public class RowOrientedAlgorithm: IAlgorithm
 
         countDown.Wait(); //wait for all tasks to finish
         return globalPivotRow;
+    }
+
+    private int FindLocalPivot(double[][] rows, int column)
+    {
+        int maxPivotRow = 0;
+        double maxPivot = Math.Abs(rows[0][column]);
+        for (int i = 1; i < rows.Length; i++)
+        {
+            double pivot = Math.Abs(rows[i][column]);
+            if (pivot > maxPivot)
+            {
+                maxPivotRow = i;
+                maxPivot = pivot;
+            }
+        }
+
+        return maxPivotRow;
     }
     
     // process back substitution on an upper triangle matrix
