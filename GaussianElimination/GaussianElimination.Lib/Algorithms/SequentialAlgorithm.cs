@@ -1,18 +1,17 @@
-﻿using System.Numerics;
-using GaussianElimination.Lib.Core;
+﻿using GaussianElimination.Lib.Core;
 
 namespace GaussianElimination.Lib.Algorithms;
 
 public class SequentialAlgorithm : IAlgorithm
 {
-    public float[] Solve(Matrix coefficients, float[] values)
+    public double[] Solve(Matrix coefficients, double[] values)
     {
         ForwardElimination(coefficients, values);
         BackwardSubstitution(coefficients, values);
         return values;
     }
 
-    private void ForwardElimination(Matrix coefficients, float[] values)
+    private void ForwardElimination(Matrix coefficients, double[] values)
     {
         int n = values.Length;
         for (int k = 0; k < n - 1; k++)
@@ -26,11 +25,8 @@ public class SequentialAlgorithm : IAlgorithm
 
             for (int i = k + 1; i < n; i++)
             {
-                float scale = coefficients[i, k] / coefficients[k, k];
-                for (int j = k + 1; j < n; j++)
-                {
-                    coefficients[i, j] -= scale * coefficients[k, j];
-                }
+                double scale = coefficients[i, k] / coefficients[k, k];
+                coefficients.SubtractRows(i, k, scale, k + 1);
 
                 values[i] -= scale * values[k];
                 coefficients[i, k] = 0;
@@ -38,17 +34,18 @@ public class SequentialAlgorithm : IAlgorithm
         }
     }
 
-    // process back substitution on a upper triangle matrix
-    private void BackwardSubstitution(Matrix coefficients, float[] values)
+    // process back substitution on an upper triangle matrix
+    private void BackwardSubstitution(Matrix coefficients, double[] values)
     {
         int n = values.Length;
         for (int i = n - 1; i >= 0; i--)
         {
-            float sum = 0;
-            for (int j = i+1; j < n; j++)
+            double sum = 0;
+            for (int j = i + 1; j < n; j++)
             {
                 sum += coefficients[i, j] * values[j];
             }
+
             values[i] = (values[i] - sum) / coefficients[i, i];
         }
     }
