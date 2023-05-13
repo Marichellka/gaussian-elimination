@@ -5,6 +5,7 @@ namespace GaussianElimination.Lib.Algorithms;
 public class RowOrientedAlgorithm: IAlgorithm
 {
     private int _threadCount;
+    private object _locker = new object();
     
     public RowOrientedAlgorithm(int threadCount)
     {
@@ -73,7 +74,6 @@ public class RowOrientedAlgorithm: IAlgorithm
         int rowsPerWorker = (end - start) / _threadCount;
         int leftRows = (end - start) % _threadCount;
         int globalPivotRow = start;
-        double globalPivot = Math.Abs(matrix[start, column]);
         CountdownEvent countDown = new CountdownEvent(_threadCount);
         for (int i = 0; i < _threadCount; i++)
         {
@@ -87,8 +87,13 @@ public class RowOrientedAlgorithm: IAlgorithm
             ThreadPool.QueueUserWorkItem(_ =>
             {
                 int localPivotRow = matrix.FindPivotRow(startCopy, startCopy+rows, column);
-                if (Volatile.Read(ref globalPivot) < Math.Abs(matrix[localPivotRow, column]))
-                    Interlocked.Exchange(ref globalPivotRow, localPivotRow);
+                lock (_locker)
+                {
+                    if (Math.Abs(matrix[globalPivotRow, column]) < Math.Abs(matrix[localPivotRow, column]))
+                    {
+                        globalPivotRow = localPivotRow;
+                    }
+                }
                 countDown.Signal();
             });
             start += rows;
