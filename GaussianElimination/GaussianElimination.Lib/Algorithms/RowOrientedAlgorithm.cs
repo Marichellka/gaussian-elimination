@@ -2,7 +2,7 @@
 
 namespace GaussianElimination.Lib.Algorithms;
 
-public class RowOrientedAlgorithm: IAlgorithm
+public class RowOrientedAlgorithm: Algorithm
 {
     private int _threadCount;
     private object _locker = new ();
@@ -13,8 +13,9 @@ public class RowOrientedAlgorithm: IAlgorithm
         ThreadPool.SetMaxThreads(threadCount, threadCount);
     }
     
-    public double[] Solve(Matrix coefficients, double[] values)
+    public override double[] Solve(Matrix coefficients, double[] values)
     {
+        ValidateSystem(coefficients, values);
         ForwardElimination(coefficients, values);
         BackwardSubstitution(coefficients, values);
         return values;
