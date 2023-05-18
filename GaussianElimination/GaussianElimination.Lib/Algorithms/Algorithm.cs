@@ -22,7 +22,7 @@ public abstract class Algorithm
         }
     }
 
-    protected void CheckPivot(double pivot)
+    protected void ValidatePivot(double pivot)
     {
         if (Math.Abs(pivot) <= Accuracy)
         {

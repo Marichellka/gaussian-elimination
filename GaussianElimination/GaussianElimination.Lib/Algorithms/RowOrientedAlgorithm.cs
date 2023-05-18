@@ -32,6 +32,7 @@ public class RowOrientedAlgorithm: Algorithm
                 (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
                 (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
             }
+            ValidatePivot(coefficients[k, k]);
             
             int rowsPerWorker = (n - k - 1) / _threadCount;
             int leftRows = (n - k - 1) % _threadCount;
@@ -135,6 +136,7 @@ public class RowOrientedAlgorithm: Algorithm
         int n = values.Length;
         for (int i = n - 1; i >= 0; i--)
         {
+            ValidatePivot(coefficients[i, i]);
             double sum = 0;
             for (int j = i+1; j < n; j++)
             {

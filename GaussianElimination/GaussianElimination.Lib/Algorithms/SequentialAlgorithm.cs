@@ -23,7 +23,7 @@ public class SequentialAlgorithm : Algorithm
                 (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
                 (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
             }
-            CheckPivot(coefficients[k, k]);
+            ValidatePivot(coefficients[k, k]);
 
             for (int i = k + 1; i < n; i++)
             {
@@ -42,7 +42,7 @@ public class SequentialAlgorithm : Algorithm
         int n = values.Length;
         for (int i = n - 1; i >= 0; i--)
         {
-            CheckPivot(coefficients[i, i]);
+            ValidatePivot(coefficients[i, i]);
             
             double sum = 0;
             for (int j = i + 1; j < n; j++)
