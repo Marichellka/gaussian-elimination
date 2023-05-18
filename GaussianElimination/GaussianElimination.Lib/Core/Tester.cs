@@ -15,7 +15,7 @@ public static class Tester
         }
     }
     
-    public static void TestMultiple(IAlgorithm algorithm, int[] sizes)
+    public static void TestMultiple(Algorithm algorithm, int[] sizes)
     {
         for (int i = 0; i < sizes.Length; i++)
         {
@@ -31,7 +31,7 @@ public static class Tester
         }
     }
 
-    public static void TestCorrectness(IAlgorithm algorithm, int size)
+    public static void TestCorrectness(Algorithm algorithm, int size)
     {
         Matrix coefficients = new Matrix(size, size);
         double[] values = coefficients.GenerateValues();
@@ -50,7 +50,7 @@ public static class Tester
         Console.WriteLine($"]\nResult is correct: {isCorrect}");
     }
 
-    public static void TestCorrectness(IAlgorithm algorithm)
+    public static void TestCorrectness(Algorithm algorithm)
     {
         Matrix coefficients = new Matrix(new double[][]
         {

@@ -73,6 +73,20 @@ public class Matrix
         return values;
     }
 
+    public bool IsSquare()
+    {
+        int size = _matrix.Length;
+        for (int i = 0; i < size; i++)
+        {
+            if (_matrix[i].Length != size)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public int Length => _matrix.Length;
     public int GetLenght(int dimension)
     {

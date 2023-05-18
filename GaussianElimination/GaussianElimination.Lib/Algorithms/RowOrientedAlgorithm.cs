@@ -2,7 +2,7 @@
 
 namespace GaussianElimination.Lib.Algorithms;
 
-public class RowOrientedAlgorithm: IAlgorithm
+public class RowOrientedAlgorithm: Algorithm
 {
     private int _threadCount;
     private object _locker = new ();
@@ -13,8 +13,9 @@ public class RowOrientedAlgorithm: IAlgorithm
         ThreadPool.SetMaxThreads(threadCount, threadCount);
     }
     
-    public double[] Solve(Matrix coefficients, double[] values)
+    public override double[] Solve(Matrix coefficients, double[] values)
     {
+        ValidateSystem(coefficients, values);
         ForwardElimination(coefficients, values);
         BackwardSubstitution(coefficients, values);
         return values;
@@ -31,6 +32,7 @@ public class RowOrientedAlgorithm: IAlgorithm
                 (coefficients[k], coefficients[maxPivotRow]) = (coefficients[maxPivotRow], coefficients[k]);
                 (values[k], values[maxPivotRow]) = (values[maxPivotRow], values[k]);
             }
+            ValidatePivot(coefficients[k, k]);
             
             int rowsPerWorker = (n - k - 1) / _threadCount;
             int leftRows = (n - k - 1) % _threadCount;
@@ -134,6 +136,7 @@ public class RowOrientedAlgorithm: IAlgorithm
         int n = values.Length;
         for (int i = n - 1; i >= 0; i--)
         {
+            ValidatePivot(coefficients[i, i]);
             double sum = 0;
             for (int j = i+1; j < n; j++)
             {
